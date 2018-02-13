@@ -1,0 +1,168 @@
+// Challenge 4
+// The function reduce takes an array and reduces the elements to a single value. For example it can sum all the numbers, multiply them, or any operation that you can put into a function.
+
+// var nums = [4, 1, 3];
+// var add = function(a, b) { return a + b; }
+// reduce(nums, add, 0);   //-> 8
+// Here's how it works. The function has an "accumulator value" which starts as the initialValue and accumulates the output of each loop. The array is iterated over, passing the accumulator and the next array element as arguments to the callback. The callback's return value becomes the new accumulator value. The next loop executes with this new accumulator value. In the example above, the accumulator begins at 0. add(0,4) is called. The accumulator's value is now 4. Then add(4, 1) to make it 5. Finally add(5, 3) brings it to 8, which is returned.
+
+var nums = [4, 1, 3];
+var add = (a, b) => a + b;
+const reduce = (arr, callback, initialVal = 0) => {
+	const len = arr.length;
+	let reducer = initialVal;
+	for (let i = 0; i < len; i++) {
+		reducer = callback(arr[i], reducer);
+	}
+	return reducer;
+};
+console.log(reduce(nums, add, 0)); //-> 8
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Challenge 5
+// Construct a function intersection that compares input arrays and returns a new array with elements found in all of the inputs. BONUS: Use reduce!
+const array = [1, 2, 3, 4, 1, 4, 3, [2, 3, 4, 5, 6, 7]];
+const intersection = arr => {
+	return arr.reduce((acc, cur) => {
+		return acc.concat(cur).filter((el, index, self) => {
+			return self.indexOf(el) === index;
+		});
+	}, []);
+};
+console.log(intersection(array));
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Challenge 6
+// Construct a function union that takes an input array of arrays, compares each array, and returns a new flat array that contains all elements. If there are duplicate elements, only add it once to the new array. Preserve the order of the elements starting from the first element of the first input array.
+// BONUS: Use reduce!
+
+// Challenge 7
+// Construct a function objOfMatches that accepts two arrays and a callback. objOfMatches will build an object and return it. To build the object, objOfMatches will test each element of the first array using the callback to see if the output matches the corresponding element (by index) of the second array. If there is a match, the element from the first array becomes a key in an object, and the element from the second array becomes the corresponding value.
+
+// Challenge 8
+// Construct a function multiMap that will accept two arrays: an array of values and an array of callbacks. multiMap will return an object whose keys match the elements in the array of values. The corresponding values that are assigned to the keys will be arrays consisting of outputs from the array of callbacks, where the input to each callback is the key.
+
+// using reduce in array of objects
+const array = [{ x: 22 }, { x: 43 }, { x: 55 }, { x: 79 }];
+const result = array.map(el => el.x).reduce((acc, cur) => Math.max(acc, cur));
+console.log(result);
+
+// --- inplementation of the map function ---
+const myMap = (arr, callback) => {
+	const returnedArr = [];
+	const len = arr.length;
+	for (let i = 0; i < len; i++) {
+		returnedArr.push(callback(arr[i]));
+	}
+	return returnedArr;
+};
+
+const array = [1, 2, 3, 4, 5, 6, 7];
+const result = myMap(array, el => {
+	return el;
+});
+console.log(result);
+
+// --- implementation of reduce function
+const array = [1, 2, 3];
+const reduce = (arr, callback, initialVal = 0) => {
+	const len = arr.length;
+	for (let i = 0; i < len; i++) {
+		initialVal = callback(initialVal, arr[i]);
+	}
+	return initialVal;
+};
+
+const result = reduce(array, (a, b) => {
+	return a + b;
+});
+console.log(result);
+
+// --- create object from array and skip repeated elements
+const array = ['Lolo', 'Bertha', 'Penelope', 'Peter', 'Nela'];
+const results = array.reduce((acc, cur, index) => {
+	if (acc.hasOwnProperty(cur) === false) {
+		acc[cur] = `is at index ${index}`;
+	}
+	return acc;
+}, {});
+console.log(results);
+
+// skip repeated values in nested array
+const array = [
+	[1, 12, 11, 2, 3, 4, 'hello'],
+	[2, 13, 11, 12, 3, 5, 6],
+	[4, 5, 8, 9, 'Hello'],
+];
+const results = array.reduce((acc, cur) => {
+	const newArr = acc.concat(cur);
+	const filteredArr = newArr.filter((el, index, self) => {
+		return index === self.indexOf(el);
+	});
+	return filteredArr;
+}, []);
+console.log(results);
+
+// filter array of objects
+const array = [
+	{ name: 'Peter' },
+	{ name: 'Bertha' },
+	{ name: 'Lolo' },
+	{ name: 'Nela' },
+	{ name: 'Luca' },
+	{ name: 'Penelope' },
+];
+
+const results = array.filter((parentEl, index, self) => {
+	return (
+		index ===
+		self.findIndex(childEl => {
+			return parentEl.name === childEl.name;
+		})
+	);
+});
+
+console.log(results);
+
+// using computed property names to covert array into object
+const array = ['Bertha', 'Peter', 'Lolo'];
+let obj = {};
+let num = 0;
+for (let i of array) {
+	obj[num++] = i;
+}
+console.log(obj);
+
+// testing area
+const obj = {
+	name: 'Lolo',
+	age: 4,
+	gender: 'male',
+};
+const returnedArr = Object.getOwnPropertyNames(obj);
+const objKeys = Object.keys(obj);
+const objValues = Object.values(obj);
+console.log(objValues);
+console.log(returnedArr);
+console.log(objKeys);
+if (returnedArr.includes('age')) {
+	console.log('yes, age is at index ' + returnedArr.indexOf('age'));
+}
+console.log(obj.hasOwnProperty('name'));
+
+// working with arrays
+// Array.length
+// Array.isArray() -> returns boolean
+const array = [1, 2, 3, 4, 5, 6];
+console.log(Array.isArray(array));
+// Array.of vs Array()
+// Array.of() -> returns a new instance of an array with the intenger passed in
+// Array() -> when passed an integer, it returns an array with length integer. This array will have empty n of slots, not undefined. This method when used it the spread operator [...Array(7)] will then result in the empty slots to be undefined
+const array = [...Array(7)];
+// Array.prototype.concat() -> merges array returning a new array
+// Array.prototype.every -> return a boolean if based on whether elements in the array passed the test or not. It is similar to the filter an map in that it takes a callback, index, array
+const array = ['Bertha', 'Lolo', 'Peter', 'Penelope', , 'You'];
+const arrayKeys = [...array.keys()];
+console.log(arrayKeys);
