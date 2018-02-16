@@ -1,0 +1,124 @@
+// Challenges Set C
+// Challenge 8
+/////////////////////////////////////////
+Create a function saveOutput that accepts a function (that will accept one argument), and a string (that will act as a password). saveOutput will then return a function that behaves exactly like the passed-in function, except for when the password string is passed in as an argument. When this happens, the returned function will return an object with all previously passed-in arguments as keys, and the corresponding outputs as values.
+const saveOutput = (callback, str) => {
+	const obj = {};
+	const func = arg => {
+		if (str) {
+			obj[arg] = callback(arg, str);
+			return obj;
+		}
+		return callback(arg, str);
+	};
+	return func;
+};
+
+const helperFunc = (arg, str) => {
+	if (str) {
+		return `Corresponding value of --> "${arg}"`;
+	} else {
+		return arg;
+	}
+};
+
+const allocator = saveOutput(helperFunc);
+console.log(allocator('Hello'));
+const allocator1 = saveOutput(helperFunc, 'psw');
+console.log(allocator1('Hi'));
+console.log(allocator1('Hello'));
+console.log(allocator1('Hola'));
+
+// Challenge 9
+///////////////////////////////////////////
+Create a function cycleIterator that accepts an array, and returns a function. The returned function will accept zero arguments. When first invoked, the returned function will return the first element of the array. When invoked a second time, the returned function will return the second element of the array, and so forth. After returning the last element of the array, the next invocation will return the first element of the array again, and continue on with the second after that, and so forth.
+
+const cycleIterator = arr => {
+	let start = 0;
+	let end = arr.length;
+	let current = '';
+	const func = () => {
+		if (start < end) {
+			current = arr[start];
+			start++;
+			return current;
+		}
+		start = 0;
+		current = arr[start];
+		start++;
+		return current;
+	};
+	return func;
+};
+
+const allocator = cycleIterator(['Luca', 'Bianca', 'Philippe']);
+console.log(allocator());
+console.log(allocator());
+console.log(allocator());
+console.log(allocator());
+console.log(allocator());
+console.log(allocator());
+console.log(allocator());
+console.log(allocator());
+console.log(allocator());
+
+// Challenge 10
+///////////////////////////////////////////
+Create a function defineFirstArg that accepts a function and an argument. Also, the function being passed in will accept at least one argument. defineFirstArg will return a new function that invokes the passed-in function with the passed-in argument as the passed-in function's first argument. Additional arguments needed by the passed-in function will need to be passed into the returned function.
+
+const defineFirstArg = (callback, arg) => {
+	const func = arg1 => {
+		return callback(arg, arg1);
+	};
+	return func;
+};
+
+const helperFunc = (arg, arg1) => {
+	return `This is the 1st arg "${arg}" and this is the 2nd arg "${arg1}"`;
+};
+
+const allocator = defineFirstArg(helperFunc, 'Hello');
+console.log(allocator('World!'));
+
+// Challenge 11
+////////////////////////////////////
+Create a function dateStamp that accepts a function and returns a function. The returned function will accept however many arguments the passed-in function accepts, and return an object with a date key that contains a timestamp with the time of invocation, and an output key that contains the result from invoking the passed-in function.
+
+const dateStamp = callback => {
+	const obj = {};
+	const func = arg => {
+		const timestamp = new Date().toLocaleString();
+		obj['date'] = timestamp;
+		obj['output'] = callback(arg);
+		return obj;
+	};
+	return func;
+};
+
+const allocator = dateStamp(arg => arg);
+console.log(allocator('test'));
+setTimeout(() => console.log(allocator('test1')), 2000);
+
+// Challenge 12
+/////////////////////////////////////////
+Create a function censor that accepts no arguments. censor will return a function that will accept either two strings, or one string. When two strings are given, the returned function will hold onto the two strings as a pair, for future use. When one string is given, the returned function will return the same string, except all instances of a first string (of a saved pair) will be replaced with the second string (of a saved pair).
+
+const censor = () => {
+	let s1 = '';
+	let s2 = '';
+	const func = (str1, str2) => {
+		if (str1 && str2) {
+			s1 = str1;
+			s2 = str2;
+		}
+		if (!str2) {
+			s1 = s2;
+			return str1;
+		}
+	};
+	return func;
+};
+
+const allocator = censor();
+console.log(allocator('Luca', 'Medina'));
+console.log(allocator('Luca'));
